@@ -1,0 +1,190 @@
+# 🚀 Finora – Financial App
+
+Welcome to the Finora financial management app!
+This project is built with a **Node.js + Express** backend and a **Vite + React** frontend. It includes features like:
+
+- 💰 AI-generated financial insights
+- 📦 Stripe payment system (Trial, Monthly, Yearly)
+- 📸 Receipt parsing
+- 📧 Email notifications with Resend
+- ☁️ Cloudinary for file uploads
+
+---
+
+## 🕈 Project Structure
+
+```
+repo-root/
+├── backend/      # Node.js backend (Express, MongoDB, Stripe)
+├── client/       # Vite + React frontend
+└── README.md
+```
+
+---
+
+## 🛠 Prerequisites
+
+Before starting, make sure you have:
+
+- [Node.js](https://nodejs.org) v18+
+- MongoDB Atlas (or local MongoDB)
+- Stripe Account
+- Resend Account
+- Cloudinary Account
+- Gemini API Key (Google AI)
+
+---
+
+## 📁 Environment Variables
+
+Create a `.env` file **inside the \*\***`/backend`\***\* folder** and paste:
+
+```env
+PORT=8000
+NODE_ENV=development
+
+MONGO_URI="mongodb+srv://<username>:<password>@cluster0.qus432n.mongodb.net/finanacial_app_db?retryWrites=true&w=majority"
+
+JWT_SECRET="jwt_secret_key"
+JWT_EXPIRES_IN="1d"
+
+JWT_REFRESH_SECRET="jwt_refresh_secret_key"
+JWT_REFRESH_EXPIRES_IN="7d"
+
+GEMINI_API_KEY="your_gemini_api_key"
+
+CLOUDINARY_CLOUD_NAME="your_cloud_name"
+CLOUDINARY_API_KEY="your_cloudinary_api_key"
+CLOUDINARY_API_SECRET="your_cloudinary_api_secret"
+
+RESEND_API_KEY="your_resend_api_key"
+RESEND_MAILER_SENDER="onboarding@resend.dev"
+
+STRIPE_SECRET_KEY="your_stripe_secret_key"
+STRIPE_MONTHLY_PLAN_PRICE_ID="stripe_monthly_price_id"
+STRIPE_YEARLY_PLAN_PRICE_ID="stripe_yearly_price_id"
+
+STRIPE_WEBHOOK_SECRET="whsec_..."
+TRIAL_DAYS=7
+
+FRONTEND_ORIGIN=http://localhost:5173
+```
+
+---
+
+## ▶️ Getting Started
+
+### 🔌 1. Start the Backend
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+Runs the backend on `http://localhost:8000` and API Route `http://localhost:8000/api`.
+
+---
+
+### 🌐 2. Start the Frontend
+
+```bash
+cd client
+npm install -f
+npm run dev
+```
+
+Runs the frontend on `http://localhost:5173`.
+
+Make sure the backend is running first.
+
+---
+
+## 🧪 Setting Up Stripe Sandbox Product (Finora Pro)
+
+To use Stripe with this app, you'll need to create **a product with 2 price tiers** in test mode:
+
+### 🔧 Step-by-Step (in Stripe Dashboard):
+
+1. Go to your [Stripe Dashboard](https://dashboard.stripe.com/test/products)
+2. Click **"Add product"**
+
+   - Name: `Finora Pro`
+   - Description: _"Premium plan for full financial tools access."_
+
+3. Under **Pricing**, click **"Add Price"** twice:
+
+   - 🟢 First Price:
+
+     - Pricing model: Standard pricing
+     - Price: `$9.99`
+     - Billing period: **Monthly**
+
+   - 🔵 Second Price:
+
+     - Pricing model: Standard pricing
+     - Price: `$99.99`
+     - Billing period: **Yearly**
+
+4. After saving, click each price and copy their **Price ID** (`price_abc123...`).
+
+### 📋 Example Environment
+
+```env
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_MONTHLY_PLAN_PRICE_ID=price_1234567890_monthly
+STRIPE_YEARLY_PLAN_PRICE_ID=price_1234567890_yearly
+```
+
+> Make sure your Stripe account is in **Sand Box (Test Mode)** during development. Use Stripe's [test cards](https://stripe.com/docs/testing) to simulate payments.
+
+---
+
+## 🔐 Stripe Webhook (Required for Billing)
+
+To handle Stripe events locally:
+
+1. Install Stripe CLI: [https://stripe.com/docs/stripe-cli](https://stripe.com/docs/stripe-cli)
+2. Forward events to your local webhook:
+
+   ```bash
+   stripe listen --forward-to localhost:8000/webhook/stripe
+   ```
+
+3. Copy the `whsec_...` key and paste it into `.env` as `STRIPE_WEBHOOK_SECRET`.
+
+---
+
+## 💡 AI Financial Insights (Gemini)
+
+This app uses Google’s Gemini API to generate smart financial tips.
+
+Get your API key from [Google AI Studio](http://aistudio.google.com/apikey) and update `.env`:
+
+```env
+GEMINI_API_KEY=your_key_here
+```
+
+---
+
+## 📦 Deployment Tips
+
+- **Backend**: Deploy `/backend` on [Render](https://render.com)
+- **Frontend**: Deploy `/client` on [Vercel](https://vercel.com)
+
+> For single-repo deployment:
+>
+> - Vercel root = `client`
+> - Render build command = `cd backend && npm install && npm run build`
+
+---
+
+## 😋 FAQ
+
+**Q: Can I skip the AI or Stripe features during setup?**
+Yes, just avoid triggering related routes or UI elements.
+
+**Q: My webhook event failed. What should I check?**
+Check that your webhook URL is live and matches exactly what you set in the Stripe dashboard or CLI.
+
+---
